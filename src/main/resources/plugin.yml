@@ -1,0 +1,13 @@
+name: DumboEssentials
+version: '1.0-SNAPSHOT'
+main: com.meteordevelopments.dumboEssentials.DumboEssentials
+api-version: '1.20'
+author: DUMBO
+depend:
+  - SuperiorSkyblock2
+softdepend:
+  - PlaceholderAPI
+commands:
+  dumboessentials:
+    description: Main command for DumboEssentials
+    usage: /<command> [reload]

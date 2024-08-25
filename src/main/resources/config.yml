@@ -1,0 +1,85 @@
+not-unlocked-message: "&c&lWorld &8&l| &cYou cannot place that block as your nether is not unlocked yet!!"
+nether: nonetherblock.nether
+
+# Time in seconds for wheat to regrow. Default is 900 seconds (15 minutes).
+regrowth-time: 900
+# List of worlds where this plugin is active.
+worlds:
+  - Spawn
+# Block area positions
+positions:
+  pos1:
+    x: 100
+    y: 64
+    z: -100
+  pos2:
+    x: 200
+    y: 80
+    z: 100
+gem-chance: 0.25
+gem-drop-message: "&aYou got lucky and found a gem while mining wheat."
+
+#Placeholders
+nether-enabled: "Unlocked"
+nether-disabled: "Locked"
+nether-restricted-blocks:
+  - NETHERRACK
+  - GLOWSTONE
+  - NETHER_BRICKS
+  - NETHER_BRICK_FENCE
+  - NETHER_BRICK_STAIRS
+  - NETHER_WART_BLOCK
+  - RED_NETHER_BRICKS
+  - CRIMSON_NYLIUM
+  - WARPED_NYLIUM
+  - CRIMSON_STEM
+  - WARPED_STEM
+  - CRIMSON_HYPHAE
+  - WARPED_HYPHAE
+  - CRIMSON_PLANKS
+  - WARPED_PLANKS
+  - CRIMSON_FENCE
+  - WARPED_FENCE
+  - CRIMSON_FENCE_GATE
+  - WARPED_FENCE_GATE
+  - CRIMSON_STAIRS
+  - WARPED_STAIRS
+  - CRIMSON_SLAB
+  - WARPED_SLAB
+  - CRIMSON_PRESSURE_PLATE
+  - WARPED_PRESSURE_PLATE
+  - CRIMSON_BUTTON
+  - WARPED_BUTTON
+  - CRIMSON_DOOR
+  - WARPED_DOOR
+  - CRIMSON_TRAPDOOR
+  - WARPED_TRAPDOOR
+  - NETHER_PORTAL
+  - NETHER_QUARTZ_ORE
+  - NETHER_GOLD_ORE
+  - NETHERITE_BLOCK
+  - NETHER_BRICK_SLAB
+  - NETHER_BRICK_WALL
+  - SOUL_SAND
+  - SOUL_SOIL
+  - BASALT
+  - POLISHED_BASALT
+  - SOUL_TORCH
+  - SOUL_LANTERN
+  - SOUL_CAMPFIRE
+  - WEEPING_VINES
+  - TWISTING_VINES
+  - BLACKSTONE
+  - POLISHED_BLACKSTONE
+  - POLISHED_BLACKSTONE_BRICKS
+  - CHISELED_POLISHED_BLACKSTONE
+  - GILDED_BLACKSTONE
+  - POLISHED_BLACKSTONE_SLAB
+  - POLISHED_BLACKSTONE_BRICK_SLAB
+  - POLISHED_BLACKSTONE_STAIRS
+  - POLISHED_BLACKSTONE_BRICK_STAIRS
+  - POLISHED_BLACKSTONE_PRESSURE_PLATE
+  - POLISHED_BLACKSTONE_BUTTON
+  - POLISHED_BLACKSTONE_BRICK_WALL
+  - BLACKSTONE_WALL
+  - MAGMA_BLOCK
