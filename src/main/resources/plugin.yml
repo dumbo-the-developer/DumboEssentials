@@ -11,3 +11,22 @@ commands:
   dumboessentials:
     description: Main command for DumboEssentials
     usage: /<command> [reload]
+  chat:
+    description: Enable / Disable chat
+    usage: /<command> [enable/disable]
+  lottery:
+    description: Get any 1 player as winner
+    usage: /<lottery>
+  buyrank:
+    description: "Buy a rank with in-game currency and rank papers."
+    usage: "/buyrank <rank>"
+
+  createshop:
+    description: "Create a shop in-game for selling ranks."
+    usage: "/createshop <rank> <cost> <requiredPapers>"
+    permission: dumboessentials.admin
+
+  giverankpaper:
+    description: "Give rank papers to a player."
+    usage: "/giverankpaper <player> <rank> <amount>"
+    permission: dumboessentials.admin

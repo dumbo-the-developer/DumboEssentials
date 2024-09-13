@@ -21,19 +21,19 @@ public class BlockListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         SuperiorPlayer splayer = SuperiorSkyblockAPI.getPlayer(player);
-        List<String> restrictedBlocks = plugin.getConfig().getStringList("nether-restricted-blocks");
+        List<String> restrictedBlocks = plugin.getConfiguration().getStringList("nether-restricted-blocks");
         Material placedBlocks = event.getBlock().getType();
+
         if (restrictedBlocks.contains(placedBlocks.toString().toUpperCase())) {
             if (splayer != null) {
                 Island island = splayer.getIsland();
                 if (splayer.isInsideIsland() && island != null) {
                     if (!island.isNetherEnabled()) {
                         event.setCancelled(true);
-                        player.sendMessage(ColorUtility.translate(plugin.getConfig().getString("not-unlocked-message")));
+                        player.sendMessage(ColorUtility.translate(plugin.getConfiguration().getString("not-unlocked-message")));
                     }
                 }
             }
-
         }
     }
 }

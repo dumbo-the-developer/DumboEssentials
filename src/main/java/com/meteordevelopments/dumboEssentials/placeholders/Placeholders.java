@@ -6,7 +6,6 @@ import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import com.meteordevelopments.dumboEssentials.DumboEssentials;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -14,7 +13,6 @@ import java.util.Objects;
 public class Placeholders extends PlaceholderExpansion {
 
     DumboEssentials plugin = DumboEssentials.getPlugin();
-    FileConfiguration config = plugin.getConfig();
 
     @Override
     @NotNull
@@ -42,8 +40,8 @@ public class Placeholders extends PlaceholderExpansion {
                 Island island = sp.getIsland();
                 if (island != null) {
                     if (island.isNetherEnabled()) {
-                        return Objects.requireNonNull(config.getString("nether-enabled"));
-                    }else return Objects.requireNonNull(config.getString("nether-disabled"));
+                        return Objects.requireNonNull(plugin.getConfiguration().getString("nether-enabled"));
+                    }else return Objects.requireNonNull(plugin.getConfiguration().getString("nether-disabled"));
                 }
             }
         }

@@ -21,4 +21,11 @@ public class ColorUtility {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
+    public static String replacePlaceholders(String message, String... replacements) {
+        for (int i = 0; i < replacements.length; i += 2) {
+            message = message.replace(replacements[i], replacements[i + 1]);
+        }
+        return ColorUtility.translate(message);
+    }
+
 }

@@ -1,3 +1,4 @@
+prefix: "&7[&b&lDumboEssentials&7]&f"
 not-unlocked-message: "&c&lWorld &8&l| &cYou cannot place that block as your nether is not unlocked yet!!"
 nether: nonetherblock.nether
 
@@ -6,7 +7,10 @@ regrowth-time: 900
 # List of worlds where this plugin is active.
 worlds:
   - Spawn
-# Block area positions
+island-worlds:
+  - SuperiorWorld
+  - SuperiorWorld_nether
+# Farm area positions
 positions:
   pos1:
     x: 100
@@ -18,10 +22,34 @@ positions:
     z: 100
 gem-chance: 0.25
 gem-drop-message: "&aYou got lucky and found a gem while mining wheat."
+regen-announcement: "&aFarm has been reset!!"
+minutes: "m"
+seconds: "s"
 
 #Placeholders
 nether-enabled: "Unlocked"
 nether-disabled: "Locked"
+
+#Chat
+chat-disabled: false
+chat-disabled-message: "&cChat is disabled by an administrator."
+chat-enable-command-message: "&aEnabled chat for everyone."
+chat-disable-command-message: "&aDisabled chat for everyone."
+
+#Lottery
+lottery:
+  countdown: "&eLottery starts in %seconds% seconds!"
+  no_players: "&cNo players are online to participate in the lottery."
+  winner: "&6Congratulations %winner%! You have won the lottery!"
+
+#Flight
+fly:
+  message: "&eFly time remaining: %time%"
+  days: d
+  hours: h
+  minutes: m
+  seconds: s
+#Nether Blocks
 nether-restricted-blocks:
   - NETHERRACK
   - GLOWSTONE
@@ -83,3 +111,9 @@ nether-restricted-blocks:
   - POLISHED_BLACKSTONE_BRICK_WALL
   - BLACKSTONE_WALL
   - MAGMA_BLOCK
+  - CRACKED_NETHER_BRICKS
+  - CHISELED_NETHER_BRICKS
+  - RED_NETHER_BRICK_STAIRS
+  - RED_NETHER_BRICK_WALL
+  - RED_NETHER_BRICK_SLAB
+  - NETHER_SPROUTS
