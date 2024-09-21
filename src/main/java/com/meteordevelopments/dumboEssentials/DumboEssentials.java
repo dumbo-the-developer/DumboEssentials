@@ -2,9 +2,9 @@ package com.meteordevelopments.dumboEssentials;
 
 import com.meteordevelopments.dumboEssentials.commands.BuyRankCommand;
 import com.meteordevelopments.dumboEssentials.commands.ChatCommand;
+import com.meteordevelopments.dumboEssentials.commands.CommandScheduler;
 import com.meteordevelopments.dumboEssentials.commands.LotteryCommand;
 import com.meteordevelopments.dumboEssentials.configs.Config;
-import com.meteordevelopments.dumboEssentials.islands.FlyChecker;
 import com.meteordevelopments.dumboEssentials.listeners.BlockListener;
 import com.meteordevelopments.dumboEssentials.listeners.JoinListener;
 import com.meteordevelopments.dumboEssentials.listeners.PistonListener;
@@ -51,6 +51,7 @@ public final class DumboEssentials extends JavaPlugin implements Listener, Comma
     private int pos1X, pos1Y, pos1Z;
     private int pos2X, pos2Y, pos2Z;
     private double gemChance;
+    private CommandScheduler commandScheduler;
 
     @Override
     public void onEnable() {
@@ -79,8 +80,8 @@ public final class DumboEssentials extends JavaPlugin implements Listener, Comma
 
         startRegrowthTask();
         restoreBlocks();
-        FlyChecker flyChecker = new FlyChecker();
-        flyChecker.startChecking();
+        commandScheduler = new CommandScheduler();
+        commandScheduler.start();
     }
 
     private void loadConfig() {
@@ -135,25 +136,40 @@ public final class DumboEssentials extends JavaPlugin implements Listener, Comma
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
         Player player = event.getPlayer();
+
+        // Check if the block is wheat and in the enabled world
         if (block.getType() == Material.WHEAT && enabledWorlds.contains(block.getWorld().getName())) {
+
+            // Check if the block is within the configured area
             if (isWithinConfiguredArea(block.getLocation())) {
-                event.setDropItems(false); // Prevent drops
-                block.setType(Material.WHEAT);
+
+                // Get the block state and block data
                 BlockState state = block.getState();
+
+                // Check if the block data is an instance of Ageable (Wheat is ageable)
                 if (state.getBlockData() instanceof Ageable ageable) {
-                    ageable.setAge(0);
-                    state.setBlockData(ageable);
-                    state.update(true, false);
-                    // Random chance to add gems
-                    Random random = new Random();
-                    if (random.nextDouble() < gemChance) { // Use configurable chance
-                        GemAPI.addGems(player.getUniqueId(), 1);
-                        player.sendMessage(ColorUtility.translate(getConfiguration().getString("gem-drop-message")));
+
+                    // Check if the wheat is fully grown (maximum age)
+                    if (ageable.getAge() == ageable.getMaximumAge()) {
+
+                        // Prevent default drops and reset wheat to age 0
+                        event.setDropItems(false);
+                        ageable.setAge(0);
+                        state.setBlockData(ageable);
+                        state.update(true, false);
+
+                        // Random chance to add gems
+                        Random random = new Random();
+                        if (random.nextDouble() < gemChance) { // Use configurable chance
+                            GemAPI.addGems(player.getUniqueId(), 1);
+                            player.sendMessage(ColorUtility.translate(getConfiguration().getString("gem-drop-message")));
+                        }
                     }
                 }
             }
         }
     }
+
 
     private void regrowBlock(Block block) {
         BlockState state = block.getState();
@@ -324,5 +340,6 @@ public final class DumboEssentials extends JavaPlugin implements Listener, Comma
     @Override
     public void onDisable() {
         new Placeholders().unregister();
+        commandScheduler.stop();
     }
 }
