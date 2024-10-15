@@ -7,6 +7,7 @@ depend:
   - SuperiorSkyblock2
 softdepend:
   - PlaceholderAPI
+  - Boss
 commands:
   dumboessentials:
     description: Main command for DumboEssentials

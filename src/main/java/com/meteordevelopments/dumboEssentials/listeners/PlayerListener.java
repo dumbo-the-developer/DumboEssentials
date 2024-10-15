@@ -71,7 +71,7 @@ public class PlayerListener implements Listener {
             block.setType(Material.BEDROCK);
 
             // Store the reversion time in the config
-            long revertTime = System.currentTimeMillis() + (20 * 1000); // 20 seconds from now
+            long revertTime = System.currentTimeMillis() + (plugin.getMineConfig().getLong("regen-time") * 1000); // 20 seconds from now
             String blockKey = blockLocation.getWorld().getName() + "," + blockLocation.getBlockX() + "," + blockLocation.getBlockY() + "," + blockLocation.getBlockZ();
             plugin.getMineConfig().set("reverting." + blockKey + ".material", originalMaterial.toString());
             plugin.getMineConfig().set("reverting." + blockKey + ".time", revertTime);
@@ -83,7 +83,7 @@ public class PlayerListener implements Listener {
                 public void run() {
                     plugin.revertBlock(blockLocation);
                 }
-            }.runTaskLater(plugin, 20 * 20); // 20 seconds delay
+            }.runTaskLater(plugin, plugin.getMineConfig().getLong("regen-time") * 20); // 20 seconds delay
         }
     }
 

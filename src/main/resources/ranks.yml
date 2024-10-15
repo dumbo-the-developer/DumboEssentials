@@ -5,7 +5,7 @@ rank_paper:
 messages:
   usage:
     buyrank: "&cUsage: /buyrank <rank>"
-    createshop: "&cUsage: /createshop <rank> <cost> <requiredPapers> <minLevel>"
+    createshop: "&cUsage: /createshop <rank> <cost> <requiredPapers> <minIslandLevel> <previousRank>"
     giverankpaper: "&cUsage: /giverankpaper <player> <amount>"
   error:
     rank_not_found: "&cRank not found."
@@ -13,9 +13,20 @@ messages:
     insufficient_resources: "&cYou do not have enough currency or rank papers."
     invalid_number: "&cCost, required papers, and level must be valid numbers."
     player_not_found: "&cPlayer not found."
+    previous_rank_required: "&cYou must have the previous rank to create a shop for this rank."
   success:
     rank_purchased: "&aYou have successfully purchased the rank: {rank}"
     shop_created: "&aShop created for rank: {rank}"
     rankpaper_given: "&aGiven {amount} {rank_paper_name} to {player}."
 
 ranks:
+  test:
+    cost: 5000
+    required_papers: 10
+    min_island_level: 20
+    previous_rank: default
+  test2:
+    cost: 10000
+    required_papers: 15
+    min_island_level: 30
+    previous_rank: test

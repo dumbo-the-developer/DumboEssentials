@@ -1,5 +1,6 @@
 package com.meteordevelopments.dumboEssentials.commands;
 
+import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import com.meteordevelopments.dumboEssentials.DumboEssentials;
 import com.meteordevelopments.dumboEssentials.utils.ColorUtility;
@@ -19,13 +20,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.math.BigInteger;
-import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 
 import static com.meteordevelopments.dumboEssentials.utils.ColorUtility.replacePlaceholders;
 
@@ -64,6 +65,20 @@ public class BuyRankCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        // Check if the player has already purchased the requested rank
+        List<String> purchasedRanks = plugin.getRankConfig().getStringList("players." + player.getUniqueId() + ".purchased_ranks");
+        if (purchasedRanks.contains(rankKey)) {
+            player.sendMessage(ColorUtility.translate(plugin.getRankConfig().getString("messages.error.rank_already_owned")));
+            return true;
+        }
+
+        // Check for previous rank requirement
+        String previousRankKey = plugin.getRankConfig().getString("ranks." + rankKey + ".previous_rank");
+        if (previousRankKey != null && !hasRank(player, previousRankKey)) {
+            player.sendMessage(ColorUtility.translate(plugin.getRankConfig().getString("messages.error.previous_rank_required")));
+            return true;
+        }
+
         int cost = plugin.getRankConfig().getInt("ranks." + rankKey + ".cost");
         int requiredPapers = plugin.getRankConfig().getInt("ranks." + rankKey + ".required_papers");
         BigInteger minLevel = new BigInteger(plugin.getRankConfig().getString("ranks." + rankKey + ".min_island_level", "0"));
@@ -92,6 +107,15 @@ public class BuyRankCommand implements CommandExecutor, TabCompleter {
         player.sendMessage(replacePlaceholders(plugin.getRankConfig().getString("messages.success.rank_purchased"),
                 "{rank}", rankKey));
         return true;
+    }
+
+    private boolean hasRank(Player player, String rankKey) {
+        LuckPerms luckPerms = LuckPermsProvider.get();
+        User user = luckPerms.getUserManager().getUser(player.getUniqueId());
+        if (user != null) {
+            return user.getNodes().stream().anyMatch(node -> node.getKey().equals("group." + rankKey));
+        }
+        return false;
     }
 
     private boolean handleGiveRankPaper(Player player, String[] args) {
@@ -134,7 +158,7 @@ public class BuyRankCommand implements CommandExecutor, TabCompleter {
     }
 
     private boolean handleCreateShop(Player player, String[] args) {
-        if (args.length < 4) {
+        if (args.length < 5) { // Updated to check for 5 arguments
             player.sendMessage(ColorUtility.translate(plugin.getRankConfig().getString("messages.usage.createshop")));
             return true;
         }
@@ -143,6 +167,7 @@ public class BuyRankCommand implements CommandExecutor, TabCompleter {
         int cost;
         int requiredPapers;
         BigInteger minLevel;
+        String previousRankKey = args[4].toLowerCase(); // New argument for previous rank
 
         try {
             cost = Integer.parseInt(args[1]);
@@ -153,10 +178,12 @@ public class BuyRankCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        // Save the new rank shop configuration, including previous rank
         plugin.getRankConfig().set("ranks." + rankKey + ".name", rankKey);
         plugin.getRankConfig().set("ranks." + rankKey + ".cost", cost);
         plugin.getRankConfig().set("ranks." + rankKey + ".required_papers", requiredPapers);
         plugin.getRankConfig().set("ranks." + rankKey + ".min_island_level", minLevel.toString());
+        plugin.getRankConfig().set("ranks." + rankKey + ".previous_rank", previousRankKey); // Set previous rank
         plugin.getRankConfig().save();
 
         player.sendMessage(ColorUtility.translate(plugin.getRankConfig().getString("messages.success.shop_created")));
@@ -180,7 +207,7 @@ public class BuyRankCommand implements CommandExecutor, TabCompleter {
                 }
             }
         }
-        return false;
+        return count >= requiredPapers;
     }
 
     private void deductCurrency(Player player, int cost) {
@@ -193,20 +220,17 @@ public class BuyRankCommand implements CommandExecutor, TabCompleter {
             if (item != null && item.getType() == Material.PAPER && item.hasItemMeta()) {
                 ItemMeta meta = item.getItemMeta();
                 if (meta.hasDisplayName() && meta.getDisplayName().equals(paperName) && meta.hasLore() && Objects.equals(meta.getLore(), paperLore)) {
-                    int amount = item.getAmount();
-                    if (amount <= remaining) {
-                        player.getInventory().remove(item);
-                        remaining -= amount;
-                    } else {
-                        item.setAmount(amount - remaining);
-                        remaining = 0;
-                    }
-                    if (remaining <= 0) {
+                    if (item.getAmount() >= remaining) {
+                        item.setAmount(item.getAmount() - remaining);
                         break;
+                    } else {
+                        remaining -= item.getAmount();
+                        item.setAmount(0);
                     }
                 }
             }
         }
+        player.updateInventory(); // Ensure inventory updates
     }
 
     private void grantRank(Player player, String rankKey) {
@@ -216,19 +240,28 @@ public class BuyRankCommand implements CommandExecutor, TabCompleter {
             Node rankNode = Node.builder("group." + rankKey).build();
             user.data().add(rankNode);
             luckPerms.getUserManager().saveUser(user);
+
+            // Update the player's purchased ranks
+            List<String> purchasedRanks = plugin.getRankConfig().getStringList("players." + player.getUniqueId() + ".purchased_ranks");
+            if (!purchasedRanks.contains(rankKey)) {
+                purchasedRanks.add(rankKey);
+                plugin.getRankConfig().set("players." + player.getUniqueId() + ".purchased_ranks", purchasedRanks);
+                plugin.getRankConfig().save();
+            }
         }
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Command command, @NotNull String alias, String[] args) {
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (command.getName().equalsIgnoreCase("buyrank")) {
-            if (args.length == 1) {
-                return new ArrayList<>(Objects.requireNonNull(plugin.getRankConfig().getConfigurationSection("ranks")).getKeys(false));
-            }
+            return plugin.getRankConfig().getConfigurationSection("ranks").getKeys(false).stream()
+                    .filter(rank -> rank.startsWith(args[0]))
+                    .collect(Collectors.toList());
         } else if (command.getName().equalsIgnoreCase("giverankpaper")) {
-            if (args.length == 1) {
-                return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
-            }
+            return Bukkit.getOnlinePlayers().stream()
+                    .map(Player::getName)
+                    .filter(name -> name.startsWith(args[0]))
+                    .collect(Collectors.toList());
         }
         return Collections.emptyList();
     }

@@ -2,7 +2,6 @@ package com.meteordevelopments.dumboEssentials;
 
 import com.meteordevelopments.dumboEssentials.commands.BuyRankCommand;
 import com.meteordevelopments.dumboEssentials.commands.ChatCommand;
-import com.meteordevelopments.dumboEssentials.commands.CommandScheduler;
 import com.meteordevelopments.dumboEssentials.commands.LotteryCommand;
 import com.meteordevelopments.dumboEssentials.configs.Config;
 import com.meteordevelopments.dumboEssentials.listeners.BlockListener;
@@ -51,7 +50,6 @@ public final class DumboEssentials extends JavaPlugin implements Listener, Comma
     private int pos1X, pos1Y, pos1Z;
     private int pos2X, pos2Y, pos2Z;
     private double gemChance;
-    private CommandScheduler commandScheduler;
 
     @Override
     public void onEnable() {
@@ -74,14 +72,13 @@ public final class DumboEssentials extends JavaPlugin implements Listener, Comma
         Objects.requireNonNull(getCommand("giverankpaper")).setExecutor(new BuyRankCommand());
         Objects.requireNonNull(getCommand("buyrank")).setTabCompleter(new BuyRankCommand());
         Objects.requireNonNull(getCommand("giverankpaper")).setTabCompleter(new BuyRankCommand());
-        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new Placeholders().register();
-        }
 
         startRegrowthTask();
         restoreBlocks();
-        commandScheduler = new CommandScheduler();
-        commandScheduler.start();
+
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new Placeholders().register();
+        }
     }
 
     private void loadConfig() {
@@ -340,6 +337,5 @@ public final class DumboEssentials extends JavaPlugin implements Listener, Comma
     @Override
     public void onDisable() {
         new Placeholders().unregister();
-        commandScheduler.stop();
     }
 }

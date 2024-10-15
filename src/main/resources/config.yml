@@ -1,9 +1,6 @@
 prefix: "&7[&b&lDumboEssentials&7]&f"
 not-unlocked-message: "&c&lWorld &8&l| &cYou cannot place that block as your nether is not unlocked yet!!"
 nether: nonetherblock.nether
-firstCommandDelayHours: 3  # First command runs every 3 hours
-secondCommandDelayMinutes: 20  # Second command runs 20 minutes after the first command
-lastRunTime: "2024-09-21T12:34:56"  # Last execution time for persistence across restarts
 # Time in seconds for wheat to regrow. Default is 900 seconds (15 minutes).
 regrowth-time: 900
 # List of worlds where this plugin is active.
